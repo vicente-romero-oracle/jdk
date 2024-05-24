@@ -21,7 +21,16 @@
  * questions.
  */
 
-import toolbox.*;
+/**
+ * @test
+ * @bug 8332497
+ * @summary javac prints an AssertionError when annotation processing runs on program with module imports
+ * @library /tools/lib
+ * @modules jdk.compiler/com.sun.tools.javac.api
+ *          jdk.compiler/com.sun.tools.javac.main
+ * @build toolbox.JavacTask toolbox.ToolBox toolbox.Task
+ * @run main ModuleImportProcessingTest
+ */
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -32,40 +41,49 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
 
-/**
- * @test
- * @bug 8332497
- * @summary error: javac prints an AssertionError when annotation processing runs on program with module imports
- * @library /tools/lib
- * @modules jdk.compiler/com.sun.tools.javac.api
- *          jdk.compiler/com.sun.tools.javac.main
- * @build toolbox.JavacTask toolbox.ToolBox toolbox.Task
- * @run main ModuleImportProcessingTest
- */
-public class ModuleImportProcessingTest {
-    final toolbox.ToolBox tb = new ToolBox();
-    final Path base = Paths.get(".");
-    final String processedSource = """
-        import module java.base;
-        import java.lang.annotation.*;
-        public class Main {
-          public static void main(String[] args) {
-            List.of();
-          }
-          @Ann
-          private void test() {}
-          @Retention(RetentionPolicy.RUNTIME)
-          @Target(ElementType.METHOD)
-          public @interface Ann {}
-        }
-        """;
+import toolbox.TestRunner;
+import toolbox.ToolBox;
+import toolbox.JavacTask;
+import toolbox.Task;
 
-    public static void main(String[] args) throws Exception {
-        new ModuleImportProcessingTest().test();
+public class ModuleImportProcessingTest extends TestRunner {
+    ToolBox tb = new ToolBox();
+
+    public ModuleImportProcessingTest() {
+        super(System.err);
     }
 
-    public void test() throws Exception {
-        tb.writeJavaFiles(base, processedSource);
+    protected void runTests() throws Exception {
+        runTests(m -> new Object[] { Paths.get(m.getName()) });
+    }
+
+    Path[] findJavaFiles(Path... paths) throws Exception {
+        return tb.findJavaFiles(paths);
+    }
+
+    public static void main(String... args) throws Exception {
+        new ModuleImportProcessingTest().runTests();
+    }
+
+    @Test
+    public void test(Path base) throws Exception {
+        Path src = base.resolve("src");
+        tb.writeJavaFiles(src,
+                """
+                import module java.base;
+                import java.lang.annotation.*;
+                public class Main {
+                    public static void main(String[] args) {
+                        List.of();
+                    }
+                    @Ann
+                    private void test() {}
+
+                    @Retention(RetentionPolicy.RUNTIME)
+                    @Target(ElementType.METHOD)
+                    public @interface Ann {}
+                }
+                """);
         new toolbox.JavacTask(tb)
                 .options(
                         "-processor", AP.class.getName(),
@@ -73,24 +91,15 @@ public class ModuleImportProcessingTest {
                         "-source", Integer.toString(Runtime.version().feature()),
                         "-proc:only"
                 )
-                .outdir(base.toString())
-                .files(base.resolve("Main.java"))
-                .run(Task.Expect.SUCCESS)
-                .writeAll();
+                .files(findJavaFiles(src))
+                .run();
     }
 
     @SupportedAnnotationTypes("*")
     public static final class AP extends AbstractProcessor {
-
         @Override
         public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
             return false;
         }
-
-        @Override
-        public SourceVersion getSupportedSourceVersion() {
-            return SourceVersion.latest();
-        }
-
     }
 }
