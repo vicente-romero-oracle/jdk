@@ -813,6 +813,7 @@ public class JavacParser implements Parser {
      *   | LONGLITERAL
      *   | FLOATLITERAL
      *   | DOUBLELITERAL
+     *   | IMAGINARYLITERAL
      *   | CHARLITERAL
      *   | STRINGLITERAL
      *   | TRUE
@@ -876,6 +877,14 @@ public class JavacParser implements Parser {
                 log.error(DiagnosticFlag.SYNTAX, token.pos, Errors.FpNumberTooLarge);
             else
                 t = F.at(pos).Literal(TypeTag.DOUBLE, n);
+            break;
+        }
+        case IMAGINARYLITERAL: {
+            // TBD do checks and construct literal
+            // *sigh* bootstrapping issue referring to Complex/Imaginary type
+            // Strip out trailing 'i' and do conversion to double
+            Double n = 0.0;
+            t = F.at(pos).Literal(TypeTag.IMAGINARY, n);
             break;
         }
         case CHARLITERAL:
@@ -1473,6 +1482,7 @@ public class JavacParser implements Parser {
             } else return illegal();
             break;
         case INTLITERAL: case LONGLITERAL: case FLOATLITERAL: case DOUBLELITERAL:
+        case IMAGINARYLITERAL:
         case CHARLITERAL: case STRINGLITERAL:
         case TRUE: case FALSE: case NULL:
             if (typeArgs == null && isMode(EXPR)) {
@@ -1992,6 +2002,7 @@ public class JavacParser implements Parser {
                         case LPAREN: case THIS: case SUPER:
                         case INTLITERAL: case LONGLITERAL: case FLOATLITERAL:
                         case DOUBLELITERAL: case CHARLITERAL: case STRINGLITERAL:
+                        case IMAGINARYLITERAL:
                         case STRINGFRAGMENT:
                         case TRUE: case FALSE: case NULL:
                         case NEW: case IDENTIFIER: case ASSERT: case ENUM: case UNDERSCORE:
@@ -2920,6 +2931,7 @@ public class JavacParser implements Parser {
                     case PLUS: case SUB: case STRINGLITERAL: case CHARLITERAL:
                     case STRINGFRAGMENT:
                     case INTLITERAL: case LONGLITERAL: case FLOATLITERAL: case DOUBLELITERAL:
+                    case IMAGINARYLITERAL:
                     case NULL: case IDENTIFIER: case UNDERSCORE: case TRUE: case FALSE:
                     case NEW: case SWITCH: case THIS: case SUPER:
                     case BYTE, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE, VOID, BOOLEAN:

@@ -525,6 +525,12 @@ public class JavaTokenizer extends UnicodeReader {
         if (acceptOneOfThenPut('f', 'F')) {
             tk = TokenKind.FLOATLITERAL;
             radix = 16;
+        } else if (acceptOneOfThenPut('i', 'I')) {
+            // look for trailing 'i' for imaginary
+            checkSourceLevel(pos, Feature.IMAGINARY_LITERALS);
+            // Should have better error handling here...
+            tk = TokenKind.IMAGINARYLITERAL;
+            radix = 16;
         } else {
             acceptOneOfThenPut('d', 'D');
             tk = TokenKind.DOUBLELITERAL;
@@ -572,6 +578,10 @@ public class JavaTokenizer extends UnicodeReader {
 
         if (acceptOneOfThenPut('f', 'F')) {
              tk = TokenKind.FLOATLITERAL;
+        } else if (acceptOneOfThenPut('i', 'I')) {
+            // else look for trailing 'i' for imaginary
+            checkSourceLevel(pos, Feature.IMAGINARY_LITERALS);
+            tk = TokenKind.IMAGINARYLITERAL;
         } else {
             acceptOneOfThenPut('d', 'D');
             tk = TokenKind.DOUBLELITERAL;

@@ -150,6 +150,7 @@ public class Tokens {
         LONGLITERAL(Tag.NUMERIC),
         FLOATLITERAL(Tag.NUMERIC),
         DOUBLELITERAL(Tag.NUMERIC),
+        IMAGINARYLITERAL(Tag.NUMERIC),
         CHARLITERAL(Tag.NUMERIC),
         STRINGLITERAL(Tag.STRING),
         STRINGFRAGMENT(Tag.STRING),
@@ -245,6 +246,8 @@ public class Tokens {
                 return "token.float";
             case DOUBLELITERAL:
                 return "token.double";
+            case IMAGINARYLITERAL:
+                return "token.imaginary";
             case ERROR:
                 return "token.bad-symbol";
             case EOF:

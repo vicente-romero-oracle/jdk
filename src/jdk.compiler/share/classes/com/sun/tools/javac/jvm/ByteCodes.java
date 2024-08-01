@@ -269,6 +269,10 @@ public interface ByteCodes {
      */
     int error           = 277;
 
+    // Prototype support for imaginary/complex literals
+    int id_add = 278;
+    int di_add = 279;
+
     /** All conditional jumps come in pairs. To streamline the
      *  treatment of jumps, we also introduce a negation of an
      *  unconditional jump. That opcode happens to be jsr.

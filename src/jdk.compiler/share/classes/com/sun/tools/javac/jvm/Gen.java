@@ -2219,6 +2219,15 @@ public class Gen extends JCTree.Visitor {
         OperatorSymbol operator = tree.operator;
         if (operator.opcode == string_add) {
             result = concat.makeConcat(tree);
+        } else if (operator.opcode == id_add) {
+            // call static method Complex.add(Imaginary, double): TODO look for example in lower or StringConcat?
+//             makeCall(make.Ident(syms.ComplexSym),
+//                      names.add,
+//                      List.of()); // right and left forks of tree, imaginary, double
+            result = null;
+        } else if (operator.opcode == di_add) {
+            // call Complex.add(double, Imaginary): TOOD look for example in lower or StringConcat?
+            result = null;
         } else if (tree.hasTag(AND)) {
             CondItem lcond = genCond(tree.lhs, CRT_FLOW_CONTROLLER);
             if (!lcond.isFalse()) {

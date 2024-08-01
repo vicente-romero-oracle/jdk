@@ -239,6 +239,8 @@ public class Operators {
         LONG(syms -> syms.longType),
         FLOAT(syms -> syms.floatType),
         DOUBLE(syms -> syms.doubleType),
+        IMAGINARY(syms -> syms.imaginaryType),
+        COMPLEX(syms -> syms.complexType),
         CHAR(syms -> syms.charType),
         BOOLEAN(syms -> syms.booleanType),
         OBJECT(syms -> syms.objectType),
@@ -713,7 +715,10 @@ public class Operators {
                     .addBinaryOperator(DOUBLE, DOUBLE, DOUBLE, dadd)
                     .addBinaryOperator(FLOAT, FLOAT, FLOAT, fadd)
                     .addBinaryOperator(LONG, LONG, LONG, ladd)
-                    .addBinaryOperator(INT, INT, INT, iadd),
+                    .addBinaryOperator(INT, INT, INT, iadd)
+                    // TODO: add all complex/imaginary cases
+                    .addBinaryOperator(IMAGINARY, DOUBLE, COMPLEX, id_add)
+                    .addBinaryOperator(DOUBLE, IMAGINARY, COMPLEX, di_add),
             new BinaryNumericOperator(Tag.MINUS)
                     .addBinaryOperator(DOUBLE, DOUBLE, DOUBLE, dsub)
                     .addBinaryOperator(FLOAT, FLOAT, FLOAT, fsub)

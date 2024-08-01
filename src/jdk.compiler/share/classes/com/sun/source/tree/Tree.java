@@ -591,6 +591,13 @@ public interface Tree {
         DOUBLE_LITERAL(LiteralTree.class),
 
         /**
+         * Used for instances of {@link LiteralTree} representing a
+         * floating-point literal expression of type {@code
+         * java.lang.Imaginary}.
+         */
+        IMAGINARY_LITERAL(LiteralTree.class),
+
+        /**
          * Used for instances of {@link LiteralTree} representing
          * a boolean literal expression of type {@code boolean}.
          */
