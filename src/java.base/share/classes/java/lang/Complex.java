@@ -174,6 +174,13 @@ public final class Complex {
             // Placeholder hash function
             return Double.hashCode(value);
         }
+
+        /**
+         * {@return lorem ipsum}
+         */
+        public double getValue() {
+            return value;
+        }
     }
 
     private Complex(double real, Imaginary imag) {
