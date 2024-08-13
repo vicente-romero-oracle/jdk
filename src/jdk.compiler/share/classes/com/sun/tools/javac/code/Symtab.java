@@ -480,20 +480,6 @@ public class Symtab {
         unknownSymbol.members_field = new Scope.ErrorScope(unknownSymbol);
         unknownSymbol.type = unknownType;
 
-        // initialize builtin types
-        initType(byteType, "byte", "Byte");
-        initType(shortType, "short", "Short");
-        initType(charType, "char", "Character");
-        initType(intType, "int", "Integer");
-        initType(longType, "long", "Long");
-        initType(floatType, "float", "Float");
-        initType(doubleType, "double", "Double");
-        initType(booleanType, "boolean", "Boolean");
-        initType(voidType, "void", "Void");
-        initType(botType, "<nulltype>");
-        initType(errType, errSymbol);
-        initType(unknownType, unknownSymbol);
-
         // the builtin class of all arrays
         arrayClass = new ClassSymbol(PUBLIC|ACYCLIC, names.Array, noSymbol);
 
@@ -514,17 +500,6 @@ public class Symtab {
         initialCompleter = ClassFinder.instance(context).getCompleter();
         rootPackage.members_field = WriteableScope.create(rootPackage);
 
-        // Enter symbols for basic types.
-        scope.enter(byteType.tsym);
-        scope.enter(shortType.tsym);
-        scope.enter(charType.tsym);
-        scope.enter(intType.tsym);
-        scope.enter(longType.tsym);
-        scope.enter(floatType.tsym);
-        scope.enter(doubleType.tsym);
-        scope.enter(booleanType.tsym);
-        scope.enter(errType.tsym);
-
         // Enter symbol for the errSymbol
         scope.enter(errSymbol);
 
@@ -537,6 +512,35 @@ public class Symtab {
         } else {
             java_base = noModule;
         }
+
+        complexType = enterClass("java.lang.Complex");
+        imaginaryType = enterClass("java.lang.Complex$Imaginary");
+        // initialize builtin types
+        initType(byteType, "byte", "Byte");
+        initType(shortType, "short", "Short");
+        initType(charType, "char", "Character");
+        initType(intType, "int", "Integer");
+        initType(longType, "long", "Long");
+        initType(floatType, "float", "Float");
+        initType(doubleType, "double", "Double");
+        initType(imaginaryType, (ClassSymbol) imaginaryType.tsym);
+        initType(booleanType, "boolean", "Boolean");
+        initType(voidType, "void", "Void");
+        initType(botType, "<nulltype>");
+        initType(errType, errSymbol);
+        initType(unknownType, unknownSymbol);
+
+        // Enter symbols for basic types.
+        scope.enter(byteType.tsym);
+        scope.enter(shortType.tsym);
+        scope.enter(charType.tsym);
+        scope.enter(intType.tsym);
+        scope.enter(longType.tsym);
+        scope.enter(floatType.tsym);
+        scope.enter(doubleType.tsym);
+        scope.enter(imaginaryType.tsym);
+        scope.enter(booleanType.tsym);
+        scope.enter(errType.tsym);
 
         // Get the initial completer for ModuleSymbols from Modules
         moduleCompleter = Modules.instance(context).getCompleter();
@@ -622,8 +626,6 @@ public class Symtab {
         classDescType = enterClass("java.lang.constant.ClassDesc");
         enumDescType = enterClass("java.lang.Enum$EnumDesc");
         ioType = enterClass("java.io.IO");
-        imaginaryType = enterClass("java.lang.Complex$Imaginary");
-        complexType = enterClass("java.lang.Complex");
         // For serialization lint checking
         objectStreamFieldType = enterClass("java.io.ObjectStreamField");
         objectInputStreamType = enterClass("java.io.ObjectInputStream");
@@ -683,7 +685,17 @@ public class Symtab {
     /** Define a new class given its name and owner.
      */
     public ClassSymbol defineClass(Name name, Symbol owner) {
-        ClassSymbol c = new ClassSymbol(0, name, owner);
+        ClassSymbol c;
+        if (name.toString().equals("Complex$Imaginary")) {
+            c = new ClassSymbol(
+                    0,
+                    name,
+                    new ClassType(Type.noType, null, null, List.nil(), IMAGINARY),
+                    owner);
+            c.type.tsym = c;
+        } else {
+            c = new ClassSymbol(0, name, owner);
+        }
         c.completer = initialCompleter;
         return c;
     }

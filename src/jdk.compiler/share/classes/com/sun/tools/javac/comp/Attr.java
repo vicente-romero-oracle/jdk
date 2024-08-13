@@ -4541,6 +4541,7 @@ public class Attr extends JCTree.Visitor {
                     pos, location, site, name, true);
             case ARRAY:
             case CLASS:
+            case IMAGINARY:
                 if (resultInfo.pt.hasTag(METHOD) || resultInfo.pt.hasTag(FORALL)) {
                     return rs.resolveQualifiedMethod(
                         pos, env, location, site, name, resultInfo.pt.getParameterTypes(), resultInfo.pt.getTypeArguments());
@@ -4552,9 +4553,14 @@ public class Attr extends JCTree.Visitor {
                     return syms.getClassField(site, types);
                 } else {
                     // We are seeing a plain identifier as selector.
-                    Symbol sym = rs.findIdentInType(pos, env, site, name, resultInfo.pkind);
+                    try {
+                        Symbol sym = rs.findIdentInType(pos, env, site, name, resultInfo.pkind);
                         sym = rs.accessBase(sym, pos, location, site, name, true);
-                    return sym;
+                        return sym;
+                    } catch (Throwable t) {
+                        System.err.println("failing for " + tree);
+                        throw t;
+                    }
                 }
             case WILDCARD:
                 throw new AssertionError(tree);

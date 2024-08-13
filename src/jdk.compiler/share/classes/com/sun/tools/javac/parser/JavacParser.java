@@ -883,7 +883,19 @@ public class JavacParser implements Parser {
             // TBD do checks and construct literal
             // *sigh* bootstrapping issue referring to Complex/Imaginary type
             // Strip out trailing 'i' and do conversion to double
-            Double n = 0.0;
+            /*Complex.Imaginary n;
+            String strVal = token.stringVal();
+            n = Complex.Imaginary.valueOf(Double.valueOf(strVal.substring(0, strVal.length() - 1)));
+            t = F.at(pos).Literal(TypeTag.IMAGINARY, n);*/
+
+            Double n;
+            String strVal = token.stringVal();
+            try {
+                n = Double.valueOf(strVal.substring(0, strVal.length() - 1));
+            } catch (NumberFormatException ex) {
+                // error already reported in scanner
+                n = Double.NaN;
+            }
             t = F.at(pos).Literal(TypeTag.IMAGINARY, n);
             break;
         }

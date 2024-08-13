@@ -1973,6 +1973,7 @@ public class Resolve {
 
             TypeSymbol symbolFor(Type t) {
                 if (!t.hasTag(CLASS) &&
+                        !t.hasTag(TypeTag.IMAGINARY) &&
                         !t.hasTag(TYPEVAR)) {
                     return null;
                 }

@@ -299,6 +299,16 @@ public interface ByteCodes {
         VOIDcode        = 8,
         TypeCodeCount   = 9;
 
+    /*
+    *   IMAGINARYcode   = 4,
+        OBJECTcode      = 5,
+        BYTEcode        = 6,
+        CHARcode        = 7,
+        SHORTcode       = 8,
+        VOIDcode        = 9,
+        TypeCodeCount   = 10;
+    * */
+
     static final String[] typecodeNames = {
         "int",
         "long",

@@ -250,6 +250,7 @@ public class Code {
         case LONG: return LONGcode;
         case FLOAT: return FLOATcode;
         case DOUBLE: return DOUBLEcode;
+        //case IMAGINARY: return IMAGINARYcode;
         case BOOLEAN: return BYTEcode;
         case VOID: return VOIDcode;
         case CLASS:

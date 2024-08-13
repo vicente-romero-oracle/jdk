@@ -4364,6 +4364,19 @@ public class Lower extends TreeTranslator {
         result = tree;
     }
 
+    @Override
+    public void visitLiteral(JCLiteral tree) {
+        if (tree.typetag == IMAGINARY) {
+            Symbol valueOfSym = lookupMethod(tree.pos(),
+                    names.valueOf,
+                    syms.imaginaryType,
+                    List.of(syms.doubleType));
+            result = make.App(make.QualIdent(valueOfSym), List.of(make.Literal(tree.getValue())));
+        } else {
+            super.visitLiteral(tree);
+        }
+    }
+
     // There ought to be nothing to rewrite here;
     // we don't generate code.
     public void visitAnnotation(JCAnnotation tree) {

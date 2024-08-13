@@ -1017,18 +1017,26 @@ public abstract class Type extends AnnoConstruct implements TypeMirror, PoolCons
          */
         public List<Type> all_interfaces_field;
 
+        private TypeTag typeTag;
+
         public ClassType(Type outer, List<Type> typarams, TypeSymbol tsym) {
             this(outer, typarams, tsym, List.nil());
         }
 
         public ClassType(Type outer, List<Type> typarams, TypeSymbol tsym,
                          List<TypeMetadata> metadata) {
+            this(outer, typarams, tsym, metadata, CLASS);
+        }
+
+        public ClassType(Type outer, List<Type> typarams, TypeSymbol tsym,
+                         List<TypeMetadata> metadata, TypeTag typeTag) {
             super(tsym, metadata);
             this.outer_field = outer;
             this.typarams_field = typarams;
             this.allparams_field = null;
             this.supertype_field = null;
             this.interfaces_field = null;
+            this.typeTag = typeTag;
         }
 
         public int poolTag() {
@@ -1037,15 +1045,15 @@ public abstract class Type extends AnnoConstruct implements TypeMirror, PoolCons
 
         @Override
         protected ClassType cloneWithMetadata(List<TypeMetadata> md) {
-            return new ClassType(outer_field, typarams_field, tsym, md) {
-                @Override
-                public Type baseType() { return ClassType.this.baseType(); }
-            };
+            return new ClassType(outer_field, typarams_field, tsym, md, typeTag) {
+                        @Override
+                        public Type baseType() { return ClassType.this.baseType(); }
+                    };
         }
 
         @Override
         public TypeTag getTag() {
-            return CLASS;
+            return typeTag;
         }
 
         @Override
@@ -1218,6 +1226,24 @@ public abstract class Type extends AnnoConstruct implements TypeMirror, PoolCons
             return v.visitDeclared(this, p);
         }
     }
+
+/*
+    public static class ImaginaryType extends ClassType {
+        public ImaginaryType(Type outer, List<Type> typarams, TypeSymbol tsym) {
+            this(outer, typarams, tsym, List.nil());
+        }
+
+        public ImaginaryType(Type outer, List<Type> typarams, TypeSymbol tsym,
+                             List<TypeMetadata> metadata) {
+            super(outer, typarams, tsym, metadata);
+        }
+
+        @Override
+        public TypeTag getTag() {
+            return IMAGINARY;
+        }
+    }
+*/
 
     public static class ErasedClassType extends ClassType {
         public ErasedClassType(Type outer, TypeSymbol tsym,

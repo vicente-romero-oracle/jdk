@@ -90,6 +90,7 @@ public class Names {
     public final Name forRemoval;
     public final Name reflective;
     public final Name getClass;
+    public final Name getValue;
     public final Name hasNext;
     public final Name hashCode;
     public final Name init;
@@ -277,6 +278,7 @@ public class Names {
         forRemoval = fromString("forRemoval");
         reflective = fromString("reflective");
         getClass = fromString("getClass");
+        getValue = fromString("getValue");
         hasNext = fromString("hasNext");
         hashCode = fromString("hashCode");
         init = fromString("<init>");
