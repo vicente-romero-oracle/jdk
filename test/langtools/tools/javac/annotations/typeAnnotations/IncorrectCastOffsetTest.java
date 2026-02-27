@@ -162,8 +162,6 @@ public class IncorrectCastOffsetTest {
                 .run()
                 .getOutput(Task.OutputKind.DIRECT);
 
-        System.err.println("---------------------------javap output:\n" + javapOut);
-
         for (String expected : expectedOutput) {
             if (!javapOut.contains(expected))
                 throw new AssertionError("unexpected output");
