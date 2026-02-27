@@ -439,9 +439,10 @@ public class TransTypes extends TreeTranslator {
     /** Visitor argument: proto-type.
      */
     private Type pt;
-    /** we use this type to indicate that "upstream" there is a explicit cast to this type,
+    /** we use this type to indicate that "upstream" there is an explicit cast to this type,
      *  this way we can avoid generating redundant type casts. Redundant casts are not
-     *  innocuous as they can trump user provided ones during code generation
+     *  innocuous as they can trump user provided ones and affect type annotation offset
+     *  calculation, if applied to the user provided type cast.
      */
     private Type explicitCastTP;
 
